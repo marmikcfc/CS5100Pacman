@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import pacman.controllers.Controller;
 import pacman.controllers.algoControllers.BFSController;
+import pacman.controllers.algoControllers.DFSController;
 import pacman.controllers.algoControllers.Evaluation;
 import pacman.controllers.moveControllers.Tree;
 import pacman.game.Game;
@@ -26,12 +27,14 @@ public class StarterPacMan extends Controller<MOVE>
 	private static final int MIN_DISTANCE=20;	//if a ghost is this close, run away
 	
 //        private BFSController bfs;
-        private iterativeDeepeningController idc;
-  
+    //    private iterativeDeepeningController idc;
+        private DFSController dfs;
+
     public StarterPacMan() {
 
-        idc = new iterativeDeepeningController();
-      
+       // idc = new iterativeDeepeningController();
+       dfs=new DFSController();
+
     }
         
         
@@ -49,10 +52,11 @@ public class StarterPacMan extends Controller<MOVE>
 		Tree tree = new Tree(Evaluation.DEPTH);
 		tree.getHeadNode().setGameState(game);
 		
-		 
-                return idc.getMove(game, ghostMoves, Evaluation.DEPTH);
+		//return bfs.getMove(ghostMoves, tree);
+                
+               // return idc.getMove(game, ghostMoves, Evaluation.DEPTH);
                
-
+               return dfs.getMove(ghostMoves, tree);
 	}
 }
 
