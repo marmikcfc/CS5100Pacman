@@ -15,7 +15,6 @@ import pacman.game.Game;
  * @author Marmik
  */
 
-
 public class Node {
 	
 	private Game gameState;

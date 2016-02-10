@@ -13,39 +13,33 @@ import pacman.game.Constants.MOVE;
  * @author Marmik
  */
 
+// Consists of Two Methods 
+// 1) EvaluateGameState() : 
+// 2) GetBestMove() :
 
 public class Evaluation {
-	// for logging
-	public static final boolean LOG_TIME = true;
-	private static final boolean LOG_HEURISTICS = false;
-	private static final boolean ACTIVATE_SCORE_HEURISTIC = true; // if true Pac-Man goes for high score than level completion
+    
+	private static final boolean COMPLETE_LEVEL = true; // if true Pac-Man goes for high score than level completion
 	
-	// the min ghost distance needs to be balanced
-	// too large and pacman will think its trapped when its not and just jiggle in place
-	// too small and pacman will not see ghosts and get itself trapped
+	
+       
 	private static final int MIN_GHOST_DISTANCE = 20;
 	private static final int MIN_EDIBLE_GHOST_DISTANCE = 100;
-	public static final int DEPTH = 7;
+        
+        //Defines the depth of the tree created. Should be balanced since deeper trees increases the execution time and 
+        // shallow trees reduces the best probility of the best move really being the best move
+	public static final int DEPTH = 6;  
 	
-	/* Evaluates game state
-	 * Higher score when:
-	 * score is high
-	 * number of lives is high
-	 * distance to pill is small
-	 * chasing edible ghost
-	 * running from nearby non-edible ghost
-	 */
+	
 	public static int evaluateGameState(Game gameState) {
 		int pacmanNode = gameState.getPacmanCurrentNodeIndex();
 		
-		int heuristic = 0;
+		int distanceFromGhost = 0;
 		
-		int shortestEdibleGhostDistance = Integer.MAX_VALUE;
-		int shortestGhostDistance = Integer.MAX_VALUE;
-		int secondShortestGhostDistance = Integer.MAX_VALUE;
+		int shortestEdibleGhostDistance = Integer.MAX_VALUE, shortestGhostDistance = Integer.MAX_VALUE,secondShortestGhostDistance = Integer.MAX_VALUE ;
 		
 		for (GHOST ghost : GHOST.values()) {
-			// ghost still in lair, will return -1 and skew distance results
+
 			if (gameState.getGhostLairTime(ghost) > 0) continue;
 			
 			int distance = gameState.getShortestPathDistance(pacmanNode,
@@ -63,36 +57,34 @@ public class Evaluation {
 			}
 		}
 		
-		//System.out.println(String.format("SGD/SEGD: %d, %d", shortestGhostDistance, shortestEdibleGhostDistance));
-		
 		if (shortestGhostDistance != Integer.MAX_VALUE && shortestGhostDistance != -1
 				&& shortestGhostDistance < MIN_GHOST_DISTANCE) {
 			if (secondShortestGhostDistance != Integer.MAX_VALUE && secondShortestGhostDistance != -1
 					&& secondShortestGhostDistance < MIN_GHOST_DISTANCE) {
-				// increase heuristic the farther pacman is from the average of the two nearest ghost
+
+
 				int avgGhostDistance = (shortestGhostDistance + secondShortestGhostDistance) / 2;
-				heuristic += avgGhostDistance * 10000;
+				distanceFromGhost += avgGhostDistance * 10000;
 			} else {
 				// increase heuristic the farther pacman is from the nearest ghost
-				heuristic += shortestGhostDistance * 10000;
+				distanceFromGhost += shortestGhostDistance * 10000;
 			}
 		} else {
-			// add reward for no ghosts nearby
-			// this prevents pacman from staying near MIN_GHOST_DISTANCE to increase heuristic
-			heuristic += (MIN_GHOST_DISTANCE + 10) * 10000;
+
+                    // this prevents pacman from staying near MIN_GHOST_DISTANCE
+			distanceFromGhost += (MIN_GHOST_DISTANCE + 10) * 10000;
 		}
-		// comment out shortestEdibleGhostDistance code to get level completing pacman
-		// leave it to get aggressive pacman
-		if (ACTIVATE_SCORE_HEURISTIC) {
+                
+                //Goes towards edible ghost for points is COMPLETE_LEVEL is set False else it goes away
+		if (COMPLETE_LEVEL) {
 			if (shortestEdibleGhostDistance != Integer.MAX_VALUE && shortestEdibleGhostDistance != -1
 					&& shortestEdibleGhostDistance < MIN_EDIBLE_GHOST_DISTANCE) {
 				// multiplier needs to be high
-				// otherwise it might be better to be near an edible ghost than to eat it :/
-				heuristic += (MIN_EDIBLE_GHOST_DISTANCE - shortestEdibleGhostDistance) * 130;
+				distanceFromGhost += (MIN_EDIBLE_GHOST_DISTANCE - shortestEdibleGhostDistance) * 130;
 			}
-			// no else because there is no incentive to not be near edible ghost
 		}
 		
+                //Keeps on updating with pill indices
 		int[] activePillIndices = gameState.getActivePillsIndices();
 		int[] activePowerPillIndices = gameState.getActivePowerPillsIndices();
 		int[] pillIndices = new int[activePillIndices.length + activePowerPillIndices.length];
@@ -102,15 +94,11 @@ public class Evaluation {
 		int shortestPillDistance =  gameState.getShortestPathDistance(pacmanNode,
 				gameState.getClosestNodeIndexFromNodeIndex(pacmanNode, pillIndices, DM.PATH));
 		
-		return heuristic + gameState.getScore() * 100 + gameState.getPacmanNumberOfLivesRemaining() * 10000000 + (200 - shortestPillDistance);
+		return distanceFromGhost + gameState.getScore() * 100 + gameState.getPacmanNumberOfLivesRemaining() * 10000000 + (200 - shortestPillDistance);
 	}
 	
+        
 	public static MOVE getBestMove(int leftValue, int rightValue, int upValue, int downValue) {
-		if (LOG_HEURISTICS) System.out.println(String.format("L/R/U/D: %s, %s, %s, %s", 
-				leftValue == Integer.MIN_VALUE ? "x" : String.valueOf(leftValue), 
-				rightValue == Integer.MIN_VALUE ? "x" : String.valueOf(rightValue), 
-				upValue == Integer.MIN_VALUE ? "x" : String.valueOf(upValue), 
-				downValue == Integer.MIN_VALUE ? "x" : String.valueOf(downValue)));
 		
 		MOVE bestMove = MOVE.NEUTRAL;
 		int bestValue = Integer.MIN_VALUE;

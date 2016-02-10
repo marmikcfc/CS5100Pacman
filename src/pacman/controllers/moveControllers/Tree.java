@@ -12,10 +12,10 @@ import pacman.game.Constants.MOVE;
  * @author Marmik
  */
 
-
+// creates a tree for easy BFS/DFS/Iterative Deepening traversals
 public class Tree {
 	
-	// headNode supports the branches, has no other major function
+
 	private Node headNode;
 	
 	public Tree(int depth) {

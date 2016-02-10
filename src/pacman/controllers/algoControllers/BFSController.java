@@ -21,6 +21,11 @@ import pacman.game.Game;
  */
 public class BFSController {
     
+  /**
+ *
+ * Creates a tree where a node based on game states and moves. Then uses BFS to find the best move to move forward
+ */
+    
     public MOVE getMove(EnumMap<GHOST, MOVE> ghostMoves, Tree tree) {
 		long start = System.currentTimeMillis();
 		LinkedList<Node> nodes = new LinkedList<Node>();
@@ -72,7 +77,6 @@ public class BFSController {
 			}
 		}
 		
-		if (Evaluation.LOG_TIME) System.out.println(System.currentTimeMillis() - start);
 		return Evaluation.getBestMove(leftValue, rightValue, upValue, downValue);
 	}
 

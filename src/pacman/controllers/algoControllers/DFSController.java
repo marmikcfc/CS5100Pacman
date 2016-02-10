@@ -18,6 +18,13 @@ import pacman.game.Constants.MOVE;
  * @author Marmik
  */
 public class DFSController {
+    
+ /**
+ *
+ * Creates a tree where a node based on game states and moves. Then uses DFS to find the best move to move forward
+ */
+    
+    
     public MOVE getMove(EnumMap<GHOST, MOVE> ghostMoves, Tree tree) {
 		long start = System.currentTimeMillis();
 		ArrayList<Node> headNeighbors = tree.getHeadNode().getNeighbors();
@@ -27,7 +34,6 @@ public class DFSController {
 		int upValue = getBestValue(ghostMoves, headNeighbors.get(2));
 		int downValue = getBestValue(ghostMoves, headNeighbors.get(3));
 		
-		if (Evaluation.LOG_TIME) System.out.println(System.currentTimeMillis() - start);
 		return Evaluation.getBestMove(leftValue, rightValue, upValue, downValue);
 	}
 	
