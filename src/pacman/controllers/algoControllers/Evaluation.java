@@ -19,7 +19,8 @@ import pacman.game.Constants.MOVE;
 
 public class Evaluation {
     
-	private static final boolean COMPLETE_LEVEL = true; // if true Pac-Man goes for high score than level completion
+    // if true Pac-Man goes for level completion than high score
+	private static final boolean COMPLETE_LEVEL = false; 
 	
 	
        
@@ -75,8 +76,8 @@ public class Evaluation {
 			distanceFromGhost += (MIN_GHOST_DISTANCE + 10) * 10000;
 		}
                 
-                //Goes towards edible ghost for points is COMPLETE_LEVEL is set False else it goes away
-		if (COMPLETE_LEVEL) {
+                //Goes towards edible ghost for points if COMPLETE_LEVEL is set False else it goes away
+		if (!COMPLETE_LEVEL) {
 			if (shortestEdibleGhostDistance != Integer.MAX_VALUE && shortestEdibleGhostDistance != -1
 					&& shortestEdibleGhostDistance < MIN_EDIBLE_GHOST_DISTANCE) {
 				// multiplier needs to be high

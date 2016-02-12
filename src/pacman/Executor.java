@@ -23,7 +23,10 @@ import pacman.controllers.examples.RandomPacMan;
 import pacman.controllers.examples.StarterGhosts;
 import pacman.controllers.examples.StarterPacMan;
 import pacman.entries.ghosts.MyBFSGhosts;
+import pacman.entries.ghosts.MyDFSGhosts;
+import pacman.entries.pacman.MyBFSPacMan;
 import pacman.entries.pacman.MyDFSPacMan;
+import pacman.entries.pacman.MyIDPacMan;
 import pacman.game.Game;
 import pacman.game.GameView;
 
@@ -64,7 +67,14 @@ public class Executor
 		//run the game in asynchronous mode.
 		boolean visual=true;
 //		exec.runGameTimed(new NearestPillPacMan(),new AggressiveGhosts(),visual);
-		exec.runGameTimed(new MyDFSPacMan(),new StarterGhosts(),visual);
+
+/* Don't use this since I realised later that Evalution file evaluates the best move from Pacman's Point of view
+   and Not Ghost's Point of View. Got to work on evalutionGhosts.java
+
+*/
+  //              exec.runGameTimed(new MyBFSPacMan(),new MyDFSGhosts(),visual);
+                  exec.runGameTimed(new MyIDPacMan(),new StarterGhosts(),visual);
+
 //		exec.runGameTimed(new HumanController(new KeyBoardInput()),new StarterGhosts(),visual);	
 		//*/
 		

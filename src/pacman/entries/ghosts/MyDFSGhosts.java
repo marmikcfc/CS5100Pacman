@@ -1,3 +1,7 @@
+/* Don't use this since I realised later that Evalution file evaluates the best move from Pacman's Point of view
+   and Not Ghost's Point of View. Got to work on evalutionGhosts.java
+*/
+
 package pacman.entries.ghosts;
 
 import java.util.EnumMap;
