@@ -9,4 +9,6 @@ Implementing AI algorithms on MS Pacman VS Ghost Framework for CS 5100 - Foundat
  * Iterative Deepening
 
 * Informed Search
- * Simulated Annealing 
+ * Simulated Annealing
+ * Hill Climbing 
+
